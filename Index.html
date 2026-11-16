@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NEXORA — Enterprise Revenue Intelligence</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="brand">
+          <span class="brand-mark">N</span>
+          <span class="brand-name">NEXORA</span>
+          <span class="badge-pro">ENT</span>
+        </div>
+        <button class="icon-btn mobile-only" id="closeSidebar" aria-label="Close Menu">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="nav-group">
+          <span class="nav-label">PLATFORM</span>
+          <button class="nav-item active" data-view="overview">
+            <i data-lucide="layout-grid"></i><span>Overview</span>
+          </button>
+          <button class="nav-item" data-view="customers">
+            <i data-lucide="users"></i><span>Customers</span>
+          </button>
+          <button class="nav-item" data-view="transactions">
+            <i data-lucide="arrow-left-right"></i><span>Ledger & Payouts</span>
+          </button>
+        </div>
+      </nav>
+
+      <div class="sidebar-footer">
+        <a href="[YOUR PORTFOLIO URL]" target="_blank" rel="noopener" class="portfolio-pill">
+          <span>Developer Portfolio →</span>
+        </a>
+        <div class="workspace-meta">
+          <div class="avatar-sm">JA</div>
+          <div class="meta-info">
+            <span class="meta-title">Jamal Aliyev</span>
+            <span class="meta-sub">Principal Admin</span>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Workspace -->
+    <main class="main-content">
+      <header class="topbar">
+        <div class="topbar-left">
+          <button class="icon-btn mobile-only" id="openSidebar" aria-label="Open Menu">
+            <i data-lucide="menu"></i>
+          </button>
+          <div class="breadcrumb">
+            <span>Workspace</span>
+            <i data-lucide="chevron-right"></i>
+            <strong id="currentViewTitle">Overview</strong>
+          </div>
+        </div>
+
+        <div class="topbar-right">
+          <div class="search-box">
+            <i data-lucide="search"></i>
+            <input type="text" id="globalSearch" placeholder="Filter records (e.g. Stripe, Acme)..." />
+          </div>
+
+          <div class="notification-wrapper">
+            <button class="icon-btn" id="notifToggle" aria-label="Notifications">
+              <i data-lucide="bell"></i>
+              <span class="notif-dot" id="notifBadge">3</span>
+            </button>
+            <div class="dropdown-panel" id="notifPanel">
+              <div class="panel-header">
+                <span>System Alerts</span>
+                <button class="text-btn" id="markAllRead">Mark read</button>
+              </div>
+              <div class="notif-list" id="notifList"></div>
+            </div>
+          </div>
+
+          <button class="icon-btn" id="themeToggle" aria-label="Toggle Theme">
+            <i data-lucide="moon" id="themeIcon"></i>
+          </button>
+        </div>
+      </header>
+
+      <!-- VIEW: OVERVIEW -->
+      <section class="view-section active" id="view-overview">
+        <div class="section-toolbar">
+          <div>
+            <h1>Revenue Telemetry</h1>
+            <p class="subtitle">Real-time subscription metrics and net dollar retention.</p>
+          </div>
+          <div class="timeframe-group" id="timeframeSelector">
+            <button class="tf-btn active" data-range="7d">7D</button>
+            <button class="tf-btn" data-range="30d">30D</button>
+            <button class="tf-btn" data-range="12m">12M</button>
+          </div>
+        </div>
+
+        <div class="kpi-grid">
+          <article class="kpi-card">
+            <div class="kpi-top">
+              <span>Net MRR</span>
+              <span class="trend positive">+14.2%</span>
+            </div>
+            <div class="kpi-value mono" id="kpi-mrr">$284,920.00</div>
+            <div class="kpi-foot">vs. $249,490 last period</div>
+          </article>
+          <article class="kpi-card">
+            <div class="kpi-top">
+              <span>Active Workspaces</span>
+              <span class="trend positive">+6.8%</span>
+            </div>
+            <div class="kpi-value mono" id="kpi-users">4,812</div>
+            <div class="kpi-foot">98.4% SLA uptime</div>
+          </article>
+          <article class="kpi-card">
+            <div class="kpi-top">
+              <span>Net Dollar Retention</span>
+              <span class="trend positive">+2.1%</span>
+            </div>
+            <div class="kpi-value mono" id="kpi-ndr">118.4%</div>
+            <div class="kpi-foot">Enterprise cohort</div>
+          </article>
+          <article class="kpi-card">
+            <div class="kpi-top">
+              <span>Logo Churn</span>
+              <span class="trend negative">-0.3%</span>
+            </div>
+            <div class="kpi-value mono" id="kpi-churn">0.82%</div>
+            <div class="kpi-foot">Target threshold &lt; 1.2%</div>
+          </article>
+        </div>
+
+        <div class="charts-grid">
+          <div class="panel chart-main">
+            <div class="panel-header">
+              <h3>Recurring Revenue Growth</h3>
+              <span class="mono-tag">USD / NET</span>
+            </div>
+            <div class="canvas-wrap">
+              <canvas id="revenueChart"></canvas>
+            </div>
+          </div>
+
+          <div class="panel chart-side">
+            <div class="panel-header">
+              <h3>Plan Distribution</h3>
+              <span class="mono-tag">ACTIVE</span>
+            </div>
+            <div class="canvas-wrap">
+              <canvas id="planChart"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-header">
+            <h3>Recent Ledger Activity</h3>
+            <button class="btn-outline" id="exportCsvBtn">Export CSV</button>
+          </div>
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Invoice ID</th>
+                  <th>Organization</th>
+                  <th>Tier</th>
+                  <th>Date</th>
+                  <th>Status</th>
+                  <th class="text-right">Amount</th>
+                </tr>
+              </thead>
+              <tbody id="recentTxBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- VIEW: CUSTOMERS -->
+      <section class="view-section" id="view-customers">
+        <div class="section-toolbar">
+          <div>
+            <h1>Account Directory</h1>
+            <p class="subtitle">Manage enterprise seats, permissions, and account status.</p>
+          </div>
+          <button class="btn-primary" id="openAddUserModal">+ Provision Account</button>
+        </div>
+        <div class="panel">
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Account</th>
+                  <th>Role</th>
+                  <th>Seats</th>
+                  <th>Status</th>
+                  <th class="text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="usersTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- VIEW: TRANSACTIONS -->
+      <section class="view-section" id="view-transactions">
+        <div class="section-toolbar">
+          <div>
+            <h1>Full Settlement Ledger</h1>
+            <p class="subtitle">Complete audit log of incoming wire and card settlements.</p>
+          </div>
+          <select id="statusFilter" class="select-input">
+            <option value="all">All Statuses</option>
+            <option value="Settled">Settled</option>
+            <option value="Pending">Pending</option>
+            <option value="Failed">Failed</option>
+          </select>
+        </div>
+        <div class="panel">
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Invoice ID</th>
+                  <th>Organization</th>
+                  <th>Tier</th>
+                  <th>Date</th>
+                  <th>Status</th>
+                  <th class="text-right">Amount</th>
+                </tr>
+              </thead>
+              <tbody id="fullTxBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <footer class="app-footer">
+        <span>Nexora Telemetry Engine v4.2</span>
+        <span>Designed &amp; Developed by <a href="[YOUR PORTFOLIO URL]" target="_blank" rel="noopener">Jamal Aliyev</a></span>
+      </footer>
+    </main>
+  </div>
+
+  <!-- Provision User Modal -->
+  <div class="modal-backdrop" id="userModal">
+    <div class="modal-card">
+      <div class="panel-header">
+        <h3>Provision New Account</h3>
+        <button class="icon-btn" id="closeUserModal"><i data-lucide="x"></i></button>
+      </div>
+      <form id="addUserForm" class="modal-form">
+        <label>Organization / Name
+          <input type="text" id="newOrgName" required placeholder="e.g. Linear Systems" />
+        </label>
+        <label>Contact Email
+          <input type="email" id="newOrgEmail" required placeholder="billing@company.io" />
+        </label>
+        <label>Plan Tier
+          <select id="newOrgRole">
+            <option value="Enterprise">Enterprise ($2,400/mo)</option>
+            <option value="Scale">Scale ($890/mo)</option>
+            <option value="Growth">Growth ($290/mo)</option>
+          </select>
+        </label>
+        <div class="modal-actions">
+          <button type="button" class="btn-outline" id="cancelUserModal">Cancel</button>
+          <button type="submit" class="btn-primary">Create Account</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
